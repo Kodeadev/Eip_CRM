@@ -41,7 +41,7 @@ export function PaymentsTable({ data }: { data: any[] }) {
       accessorKey: 'payment_date',
       header: 'Fecha de Pago',
       cell: ({ row }) => {
-        const dateStr = row.getValue('payment_date')
+        const dateStr = row.getValue('payment_date') as string | null
         return <span className="text-foreground/90 font-medium">{dateStr ? format(new Date(dateStr), 'dd/MM/yyyy') : 'N/D'}</span>
       },
     },
@@ -49,7 +49,7 @@ export function PaymentsTable({ data }: { data: any[] }) {
       accessorKey: 'next_due_date',
       header: 'Próximo Vencimiento',
       cell: ({ row }) => {
-        const nextDate = new Date(row.getValue('next_due_date'))
+        const nextDate = new Date(row.getValue('next_due_date') as string)
         const today = new Date()
         const diffDays = Math.ceil((nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
         
@@ -77,7 +77,7 @@ export function PaymentsTable({ data }: { data: any[] }) {
       accessorKey: 'amount',
       header: 'Monto',
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue('amount'))
+        const amount = parseFloat(row.getValue('amount') as string)
         return <span className="font-bold text-foreground">${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
       },
     },

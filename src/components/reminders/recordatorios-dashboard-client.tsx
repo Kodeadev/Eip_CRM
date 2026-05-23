@@ -110,11 +110,11 @@ export function RecordatoriosDashboardClient({
     setFeedbackMsg(null)
     try {
       const result = await handleRecalculateEngine()
-      if (result.success) {
+      if (result?.success) {
         setFeedbackMsg({ type: 'success', text: `Motor sincronizado con éxito. Se procesaron ${result.count || 0} sociedades.` })
         await refreshData()
       } else {
-        setFeedbackMsg({ type: 'error', text: result.error || 'Error al ejecutar el motor' })
+        setFeedbackMsg({ type: 'error', text: (result as any)?.error || 'Error al ejecutar el motor' })
       }
     } catch (e) {
       setFeedbackMsg({ type: 'error', text: 'Error inesperado al conectar con el servidor.' })
