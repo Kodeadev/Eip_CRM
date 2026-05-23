@@ -1,0 +1,355 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ========================================================
+   THEME STYLING SYSTEM - MULTI-PALETTE HIGH END
+   ======================================================== */
+
+/* Global base transition so theme shifts are silk-smooth */
+* {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. OBSIDIAN GOLD (Luxury black gold theme) */
+:root, .theme-obsidian-gold {
+  --background: oklch(0.09 0.005 240);
+  --foreground: oklch(0.93 0.008 50);
+  --card: oklch(0.12 0.006 240 / 70%);
+  --card-foreground: oklch(0.93 0.008 50);
+  --popover: oklch(0.11 0.006 240);
+  --popover-foreground: oklch(0.93 0.008 50);
+  --primary: oklch(0.77 0.12 78); /* Deep gold #CBA135 */
+  --primary-foreground: oklch(0.09 0.005 240);
+  --secondary: oklch(0.16 0.01 78);
+  --secondary-foreground: oklch(0.77 0.12 78);
+  --muted: oklch(0.15 0.005 240);
+  --muted-foreground: oklch(0.60 0.008 78);
+  --accent: oklch(0.77 0.12 78 / 15%);
+  --accent-foreground: oklch(0.77 0.12 78);
+  --destructive: oklch(0.55 0.18 28);
+  --destructive-foreground: oklch(0.95 0.01 28);
+  --border: oklch(0.77 0.12 78 / 12%);
+  --input: oklch(0.77 0.12 78 / 8%);
+  --ring: oklch(0.77 0.12 78);
+  --radius: 0.75rem;
+
+  --sidebar: oklch(0.10 0.005 240 / 80%);
+  --sidebar-foreground: oklch(0.93 0.008 50);
+  --sidebar-primary: oklch(0.77 0.12 78);
+  --sidebar-primary-foreground: oklch(0.09 0.005 240);
+  --sidebar-accent: oklch(0.77 0.12 78 / 15%);
+  --sidebar-accent-foreground: oklch(0.77 0.12 78);
+  --sidebar-border: oklch(0.77 0.12 78 / 10%);
+  --sidebar-ring: oklch(0.77 0.12 78);
+
+  /* Glassmorphism tokens */
+  --glass-bg: rgba(10, 10, 11, 0.65);
+  --glass-bg-hover: rgba(16, 16, 18, 0.75);
+  --glass-border: rgba(203, 161, 53, 0.12);
+  --glass-border-hover: rgba(203, 161, 53, 0.28);
+  --glass-shadow: rgba(0, 0, 0, 0.55);
+  --glass-shadow-hover: rgba(203, 161, 53, 0.06);
+  --ambient-orb: rgba(203, 161, 53, 0.12);
+  --primary-hover: oklch(0.81 0.13 78);
+  --primary-glow: rgba(203, 161, 53, 0.20);
+}
+
+/* 2. ARCTIC SLATE (Light Ice-Silver theme) */
+.theme-arctic-slate {
+  --background: oklch(0.98 0.005 240); /* Ice-silver background `#F8FAFC` */
+  --foreground: oklch(0.20 0.015 240); /* Deep navy-slate foreground `#0F172A` */
+  --card: oklch(1 0 0 / 75%); /* Elegant white transparent card */
+  --card-foreground: oklch(0.20 0.015 240);
+  --popover: oklch(0.99 0.005 240);
+  --popover-foreground: oklch(0.20 0.015 240);
+  --primary: oklch(0.50 0.18 245); /* Deep rich indigo primary `#4F46E5` */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.01 240);
+  --secondary-foreground: oklch(0.20 0.015 240);
+  --muted: oklch(0.95 0.005 240);
+  --muted-foreground: oklch(0.45 0.01 240);
+  --accent: oklch(0.50 0.18 245 / 10%);
+  --accent-foreground: oklch(0.50 0.18 245);
+  --destructive: oklch(0.55 0.18 28);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.20 0.015 240 / 8%);
+  --input: oklch(0.20 0.015 240 / 5%);
+  --ring: oklch(0.50 0.18 245);
+  --radius: 0.75rem;
+
+  --sidebar: oklch(0.99 0.005 240 / 85%);
+  --sidebar-foreground: oklch(0.20 0.015 240);
+  --sidebar-primary: oklch(0.50 0.18 245);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.50 0.18 245 / 10%);
+  --sidebar-accent-foreground: oklch(0.50 0.18 245);
+  --sidebar-border: oklch(0.20 0.015 240 / 6%);
+  --sidebar-ring: oklch(0.50 0.18 245);
+
+  /* Glassmorphism tokens */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-bg-hover: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-border-hover: rgba(79, 70, 229, 0.25);
+  --glass-shadow: rgba(15, 23, 42, 0.04);
+  --glass-shadow-hover: rgba(79, 70, 229, 0.04);
+  --ambient-orb: rgba(79, 70, 229, 0.08);
+  --primary-hover: oklch(0.45 0.18 245);
+  --primary-glow: rgba(79, 70, 229, 0.15);
+}
+
+/* 3. MIDNIGHT EMERALD (Deep Green Tech theme) */
+.theme-midnight-emerald {
+  --background: oklch(0.10 0.015 160); /* Pine dark */
+  --foreground: oklch(0.93 0.01 160);
+  --card: oklch(0.13 0.015 160 / 70%);
+  --card-foreground: oklch(0.93 0.01 160);
+  --popover: oklch(0.12 0.015 160);
+  --popover-foreground: oklch(0.93 0.01 160);
+  --primary: oklch(0.73 0.16 160); /* Aura Mint/Emerald #10B981 */
+  --primary-foreground: oklch(0.10 0.015 160);
+  --secondary: oklch(0.16 0.02 160);
+  --secondary-foreground: oklch(0.73 0.16 160);
+  --muted: oklch(0.15 0.01 160);
+  --muted-foreground: oklch(0.58 0.01 160);
+  --accent: oklch(0.73 0.16 160 / 15%);
+  --accent-foreground: oklch(0.73 0.16 160);
+  --destructive: oklch(0.55 0.18 28);
+  --destructive-foreground: oklch(0.95 0.01 28);
+  --border: rgba(16, 185, 129, 0.15);
+  --input: rgba(16, 185, 129, 0.08);
+  --ring: oklch(0.73 0.16 160);
+  --radius: 0.75rem;
+
+  --sidebar: oklch(0.11 0.015 160 / 80%);
+  --sidebar-foreground: oklch(0.93 0.01 160);
+  --sidebar-primary: oklch(0.73 0.16 160);
+  --sidebar-primary-foreground: oklch(0.10 0.015 160);
+  --sidebar-accent: oklch(0.73 0.16 160 / 15%);
+  --sidebar-accent-foreground: oklch(0.73 0.16 160);
+  --sidebar-border: rgba(16, 185, 129, 0.10);
+  --sidebar-ring: oklch(0.73 0.16 160);
+
+  /* Glassmorphism tokens */
+  --glass-bg: rgba(10, 18, 14, 0.70);
+  --glass-bg-hover: rgba(14, 25, 20, 0.80);
+  --glass-border: rgba(16, 185, 129, 0.12);
+  --glass-border-hover: rgba(16, 185, 129, 0.35);
+  --glass-shadow: rgba(0, 0, 0, 0.55);
+  --glass-shadow-hover: rgba(16, 185, 129, 0.08);
+  --ambient-orb: rgba(16, 185, 129, 0.12);
+  --primary-hover: oklch(0.77 0.16 160);
+  --primary-glow: rgba(16, 185, 129, 0.20);
+}
+
+/* ========================================================
+   GLOBAL LAYOUT GLASS CLASSES & UTILITIES
+   ======================================================== */
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px -10px var(--glass-shadow);
+}
+
+.glass-card-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px) scale(1.005);
+  border-color: var(--glass-border-hover);
+  background: var(--glass-bg-hover);
+  box-shadow: 0 16px 45px -10px var(--glass-shadow), 
+              0 0 15px 0 var(--glass-shadow-hover);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+  outline: none;
+}
+
+.glass-button-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: var(--primary-foreground);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px 0 var(--primary-glow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.glass-button-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 var(--primary-glow), 0 0 8px 0 var(--primary);
+  opacity: 0.95;
+}
+
+.glass-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ========================================================
+   AMBIENT LAYERED BACKGROUNDS & CINEMATIC ORBS
+   ======================================================== */
+
+.ambient-layout {
+  position: relative;
+  background-color: var(--background);
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Base digital noise matrix mesh */
+.ambient-layout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 0);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black, transparent 75%);
+  z-index: 1;
+}
+
+/* Soft cinematic dynamic lighting orb 1 */
+.ambient-orb-top {
+  position: absolute;
+  top: -10%;
+  left: 20%;
+  width: 60vw;
+  height: 50vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ambient-orb) 0%, transparent 70%);
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatOrb1 15s infinite alternate ease-in-out;
+}
+
+/* Soft cinematic dynamic lighting orb 2 */
+.ambient-orb-bottom {
+  position: absolute;
+  bottom: -15%;
+  right: 15%;
+  width: 50vw;
+  height: 50vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ambient-orb) 0%, transparent 70%);
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatOrb2 18s infinite alternate ease-in-out;
+}
+
+@keyframes floatOrb1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(4vw, 5vh) scale(1.1);
+  }
+}
+
+@keyframes floatOrb2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-3vw, -4vh) scale(1.05);
+  }
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
