@@ -33,7 +33,7 @@ export function NotificationHistory({ logs, onRefresh }: NotificationHistoryProp
       </div>
 
       {/* Log list */}
-      <div className="overflow-hidden border border-white/5 rounded-xl bg-transparent">
+      <div className="overflow-x-auto border border-white/5 rounded-xl bg-transparent">
         <table className="w-full text-left text-sm text-muted-foreground">
           <thead className="bg-white/[0.02] border-b border-white/5 text-xs font-bold text-muted-foreground uppercase">
             <tr>

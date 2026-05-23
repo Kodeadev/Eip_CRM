@@ -36,7 +36,7 @@ export default async function UsuariosPage() {
         </Link>
       </div>
 
-      <div className="glass-panel border border-border bg-card/45 shadow-sm rounded-2xl overflow-hidden">
+      <div className="glass-panel border border-border bg-card/45 shadow-sm rounded-2xl overflow-x-auto">
         <Table>
           <TableHeader className="bg-muted/40 border-b border-border">
             <TableRow className="hover:bg-transparent">

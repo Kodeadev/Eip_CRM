@@ -148,7 +148,7 @@ export function SocietiesTable({ data }: { data: any[] }) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/5 bg-transparent overflow-hidden">
+      <div className="rounded-xl border border-white/5 bg-transparent overflow-x-auto">
         <Table>
           <TableHeader className="bg-white/[0.02] border-b border-white/5">
             {table.getHeaderGroups().map((headerGroup) => (
