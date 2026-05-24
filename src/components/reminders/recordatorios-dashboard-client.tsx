@@ -158,18 +158,9 @@ export function RecordatoriosDashboardClient({
             Control de Tasas Anuales
           </h1>
           <p className="text-muted-foreground text-sm mt-1 font-semibold">
-            Gestión inteligente y alertas automatizadas por Email (SMTP) y WhatsApp (Twilio API) para el cobro de sociedades.
+            Gestión inteligente y alertas automatizadas.
           </p>
         </div>
-
-        <button
-          onClick={triggerRecalculate}
-          disabled={isRecalculating}
-          className="glass-button-primary h-11 px-5 inline-flex items-center justify-center gap-2 rounded-xl text-primary-foreground font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/10 hover:opacity-90 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 shrink-0"
-        >
-          <RefreshCw className={`h-4 w-4 shrink-0 ${isRecalculating ? 'animate-spin' : ''}`} />
-          <span>Sincronizar Motor</span>
-        </button>
       </div>
 
       {/* Alert Feedbacks */}

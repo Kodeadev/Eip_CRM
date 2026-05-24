@@ -21,17 +21,21 @@ export default async function UsuariosPage() {
   const users = await userService.listUsers()
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-border pb-4">
+    <div className="space-y-8 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">Gestión de Usuarios</h1>
-          <p className="text-xs text-muted-foreground">Administra las credenciales corporativas, roles y permisos dentro del ecosistema.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground font-heading">
+            Gestión de Usuarios
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1 font-semibold">
+            Administra las credenciales corporativas, roles y permisos dentro del ecosistema.
+          </p>
         </div>
         <Link
           href="/dashboard/usuarios/nuevo"
-          className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-xs uppercase tracking-wider shadow hover:opacity-90 active:scale-95 transition-all duration-150 cursor-pointer"
+          className="glass-button-primary h-11 px-5 inline-flex items-center gap-2 rounded-xl text-primary-foreground font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/10 hover:opacity-90 active:scale-95 transition-all duration-200 cursor-pointer shrink-0"
         >
-          <UserPlus className="h-3.5 w-3.5" />
+          <UserPlus className="h-4 w-4" />
           <span>Nuevo Usuario</span>
         </Link>
       </div>
@@ -59,12 +63,12 @@ export default async function UsuariosPage() {
                   <TableCell className="px-6 py-4 font-semibold text-foreground">{user.name}</TableCell>
                   <TableCell className="px-6 py-4 text-muted-foreground font-medium">{user.email}</TableCell>
                   <TableCell className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-2xs font-bold uppercase tracking-wider border ${
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-2xs font-bold border ${
                       user.role === 'admin' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
                       user.role === 'empleado' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
                       'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                     }`}>
-                      {user.role}
+                      {user.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()) : ''}
                     </span>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right">

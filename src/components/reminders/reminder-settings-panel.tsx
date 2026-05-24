@@ -101,7 +101,7 @@ export function ReminderSettingsPanel({
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-3">
           <div>
-            <h3 className="text-base font-bold text-foreground">Reglas de Vencimiento y Umbrales</h3>
+            <h3 className="text-base font-bold text-foreground">Reglas de Vencimiento</h3>
             <p className="text-xs text-muted-foreground">Configura cuándo avisar al administrador antes del cobro anual.</p>
           </div>
           <button
@@ -217,123 +217,7 @@ export function ReminderSettingsPanel({
         </div>
       </div>
 
-      {/* 2. Notification Gateways Configuration list */}
-      {userRole === 'admin' && (
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-base font-bold text-foreground">Proveedores de Notificación Habilitados</h3>
-            <p className="text-xs text-muted-foreground">Credenciales del servidor SMTP cPanel (Email) y Twilio API (WhatsApp) activas en la base de datos.</p>
-          </div>
 
-          {/* Dynamic gateway rendering with NO SMTP filters! Ensures both render side by side. */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {providers.map((provider) => {
-              const isSmtp = provider.provider_type === 'email_smtp'
-              const isTwilio = provider.provider_type === 'whatsapp_twilio'
-              const config = provider.config || {}
-
-              return (
-                <div 
-                  key={provider.id} 
-                  className="p-5 rounded-2xl border border-border bg-card shadow-sm flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between border-b border-border pb-3">
-                      <div className="flex items-center gap-2">
-                        {isSmtp ? (
-                          <div className="p-2 bg-blue-500/10 text-blue-400 rounded-xl">
-                            <Mail className="h-5 w-5" />
-                          </div>
-                        ) : (
-                          <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                            <MessageSquare className="h-5 w-5" />
-                          </div>
-                        )}
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground">
-                            {isSmtp ? 'Servidor de Correo (SMTP)' : 'Twilio API (WhatsApp)'}
-                          </h4>
-                          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
-                            {provider.provider_type}
-                          </span>
-                        </div>
-                      </div>
-
-                      <label className="relative inline-flex items-center cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={provider.is_active}
-                          onChange={(e) => handleToggleProvider(provider.id, e.target.checked)}
-                          className="sr-only peer"
-                        />
-                        <div className="w-9 h-5 bg-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
-                        <span className="ml-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
-                          {provider.is_active ? 'Activo' : 'Inactivo'}
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* Config details masked */}
-                    <div className="mt-4 space-y-2">
-                      {isSmtp ? (
-                        <>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Servidor Host:</span>
-                            <span className="text-foreground/90 font-semibold">{config.smtp_host || 'N/A'}</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Puerto SMTP:</span>
-                            <span className="text-foreground/90 font-semibold">{config.smtp_port || 'N/A'}</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Usuario SMTP:</span>
-                            <span className="text-foreground/90 font-semibold">{config.smtp_user || 'N/A'}</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Destinatario Admin:</span>
-                            <span className="text-foreground/90 text-blue-500 font-bold">{config.admin_recipient_email || 'N/A'}</span>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Account SID:</span>
-                            <span className="text-foreground/90 font-mono font-semibold">
-                              {config.account_sid ? `${config.account_sid.slice(0, 8)}...` : 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Auth Token:</span>
-                            <span className="text-foreground/90 font-mono font-semibold">••••••••••••••••</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">WhatsApp Remitente:</span>
-                            <span className="text-foreground/90 font-semibold">+{config.from_number || 'N/A'}</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">WhatsApp Admin:</span>
-                            <span className="text-foreground/90 font-bold text-emerald-500">{config.admin_recipient_phone || 'N/A'}</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-5 border-t border-border pt-3 flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-muted-foreground text-2xs">
-                      <Lock className="h-3 w-3" />
-                      <span>Encriptado en base de datos</span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">
-                      ID: {provider.id.slice(0, 8)}...
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
