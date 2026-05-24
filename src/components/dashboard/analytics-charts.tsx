@@ -90,6 +90,7 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
                 tickLine={false} 
                 tick={{ fill: 'var(--muted-foreground)' }} 
                 tickFormatter={(value) => `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
+                domain={[0, (dataMax) => (dataMax === 0 ? 100 : 'auto')]}
               />
               <Tooltip content={<CustomPaymentsTooltip />} />
               <Area 
