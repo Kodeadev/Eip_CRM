@@ -4,11 +4,23 @@ import { SocietyInput } from '@/validators/society'
 export class SocietyService {
   constructor(private supabase: SupabaseClient) {}
 
-  async listSocieties() {
-    const { data, error } = await this.supabase
+  async listSocieties(filter?: { status?: string }) {
+    let query = this.supabase
       .from('societies')
       .select('*')
       .is('deleted_at', null)
+
+    if (filter?.status) {
+      let dbStatus = filter.status
+      if (dbStatus === 'en_tramite') {
+        dbStatus = 'en trámite'
+      }
+      query = query.eq('status', dbStatus)
+    }
+
+    query = query.order('created_at', { ascending: false })
+    
+    const { data, error } = await query
     
     if (error) throw error
     return data

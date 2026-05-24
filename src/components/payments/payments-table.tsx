@@ -12,11 +12,11 @@ import {
 } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Building, Edit } from 'lucide-react'
+import { Building, Edit, Filter, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 
-export function PaymentsTable({ data }: { data: any[] }) {
+export function PaymentsTable({ data, activeFilter }: { data: any[]; activeFilter?: string }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const router = useRouter()
 
@@ -130,6 +130,27 @@ export function PaymentsTable({ data }: { data: any[] }) {
 
   return (
     <div className="space-y-4">
+      {activeFilter && (
+        <div className="flex items-center justify-between gap-3 p-3 bg-primary/10 border border-primary/20 rounded-xl">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-foreground font-semibold">
+            <Filter className="h-4 w-4 text-primary shrink-0 animate-pulse" />
+            <span>Filtro activo: </span>
+            <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-primary/25 border border-primary/30 text-primary-foreground">
+              {activeFilter === 'upcoming' ? 'Cobros Próximos (30 días)' : 'Cobros Vencidos'}
+            </span>
+          </div>
+          <Button 
+            onClick={() => router.push('/dashboard/pagos')}
+            variant="ghost" 
+            size="sm" 
+            className="h-8 gap-1.5 hover:bg-white/5 rounded-lg text-[10px] font-bold text-muted-foreground hover:text-foreground cursor-pointer uppercase tracking-wider"
+          >
+            <X className="h-3.5 w-3.5" />
+            <span>Limpiar Filtro</span>
+          </Button>
+        </div>
+      )}
+
       <div className="rounded-xl border border-white/5 bg-transparent overflow-x-auto">
         <Table>
           <TableHeader className="bg-white/[0.02] border-b border-white/5">

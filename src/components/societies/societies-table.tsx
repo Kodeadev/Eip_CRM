@@ -13,12 +13,12 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MoreHorizontal, Eye, Edit, Trash, ArrowUpDown, ArrowUp, ArrowDown, Search } from 'lucide-react'
+import { MoreHorizontal, Eye, Edit, Trash, ArrowUpDown, ArrowUp, ArrowDown, Search, Filter, X } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-export function SocietiesTable({ data }: { data: any[] }) {
+export function SocietiesTable({ data, activeFilter }: { data: any[]; activeFilter?: string }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = React.useState('')
   const router = useRouter()
@@ -136,6 +136,27 @@ export function SocietiesTable({ data }: { data: any[] }) {
 
   return (
     <div className="space-y-5">
+      {activeFilter && (
+        <div className="flex items-center justify-between gap-3 p-3 bg-primary/10 border border-primary/20 rounded-xl">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-foreground font-semibold">
+            <Filter className="h-4 w-4 text-primary shrink-0 animate-pulse" />
+            <span>Filtro activo: </span>
+            <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-primary/25 border border-primary/30 text-primary-foreground">
+              {activeFilter === 'en_tramite' ? 'En Trámite' : activeFilter === 'activa' ? 'Activas' : 'Suspendidas'}
+            </span>
+          </div>
+          <Button 
+            onClick={() => router.push('/dashboard/sociedades')}
+            variant="ghost" 
+            size="sm" 
+            className="h-8 gap-1.5 hover:bg-white/5 rounded-lg text-[10px] font-bold text-muted-foreground hover:text-foreground cursor-pointer uppercase tracking-wider"
+          >
+            <X className="h-3.5 w-3.5" />
+            <span>Limpiar Filtro</span>
+          </Button>
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-4">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-muted-foreground" />

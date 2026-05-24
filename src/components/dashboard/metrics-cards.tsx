@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Building, CheckCircle, Clock, AlertTriangle, CreditCard, Calendar } from "lucide-react"
+import Link from "next/link"
 
 export function MetricsCards({ metrics }: { metrics: any }) {
   const cards = [
@@ -11,6 +12,8 @@ export function MetricsCards({ metrics }: { metrics: any }) {
       color: "text-blue-400",
       bg: "bg-blue-500/10 border-blue-500/20",
       glow: "shadow-blue-500/5",
+      glowBg: "bg-blue-500",
+      href: "/dashboard/sociedades",
     },
     {
       title: "Activas",
@@ -20,6 +23,8 @@ export function MetricsCards({ metrics }: { metrics: any }) {
       color: "text-emerald-400",
       bg: "bg-emerald-500/10 border-emerald-500/20",
       glow: "shadow-emerald-500/5",
+      glowBg: "bg-emerald-500",
+      href: "/dashboard/sociedades?status=activa",
     },
     {
       title: "En Trámite",
@@ -29,15 +34,19 @@ export function MetricsCards({ metrics }: { metrics: any }) {
       color: "text-amber-400",
       bg: "bg-amber-500/10 border-amber-500/20",
       glow: "shadow-amber-500/5",
+      glowBg: "bg-amber-500",
+      href: "/dashboard/sociedades?status=en_tramite",
     },
     {
       title: "Suspendidas",
       value: metrics.suspended,
       icon: AlertTriangle,
       description: "Temporalmente inactivas",
-      color: "text-red-400",
-      bg: "bg-red-500/10 border-red-500/20",
-      glow: "shadow-red-500/5",
+      color: "text-rose-400",
+      bg: "bg-rose-500/10 border-rose-500/20",
+      glow: "shadow-rose-500/5",
+      glowBg: "bg-rose-500",
+      href: "/dashboard/sociedades?status=suspendida",
     },
     {
       title: "Cobros Próximos",
@@ -47,6 +56,8 @@ export function MetricsCards({ metrics }: { metrics: any }) {
       color: "text-indigo-400",
       bg: "bg-indigo-500/10 border-indigo-500/20",
       glow: "shadow-indigo-500/5",
+      glowBg: "bg-indigo-500",
+      href: "/dashboard/pagos?filter=upcoming",
     },
     {
       title: "Cobros Vencidos",
@@ -56,34 +67,44 @@ export function MetricsCards({ metrics }: { metrics: any }) {
       color: "text-rose-400",
       bg: "bg-rose-500/10 border-rose-500/20",
       glow: "shadow-rose-500/5",
+      glowBg: "bg-rose-500",
+      href: "/dashboard/pagos?filter=overdue",
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6 gap-4">
       {cards.map((card, index) => (
-        <Card 
+        <Link 
+          href={card.href} 
           key={index} 
-          className="glass-panel glass-card-hover border border-white/5 relative overflow-hidden bg-black/25 rounded-2xl shadow-xl transition-all duration-300"
+          className="group block cursor-pointer"
         >
-          {/* Card light reflection */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+          <Card 
+            className="glass-panel border border-white/5 relative overflow-hidden bg-black/25 rounded-2xl shadow-xl transition-all duration-300 hover:scale-[1.03] hover:border-white/10 hover:shadow-2xl hover:shadow-white/[0.01] active:scale-[0.98] h-full"
+          >
+            {/* Card light reflection */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-white/[0.05]" />
 
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-5">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-sans">
-              {card.title}
-            </CardTitle>
-            <div className={`p-2 rounded-xl border ${card.bg} shadow-lg ${card.glow} flex items-center justify-center shrink-0`}>
-              <card.icon className={`h-4 w-4 ${card.color}`} />
-            </div>
-          </CardHeader>
-          <CardContent className="px-5 pb-5">
-            <div className="text-3xl font-bold tracking-tight text-foreground font-heading">
-              {card.value}
-            </div>
-            <p className="text-xs text-muted-foreground/80 mt-1 font-semibold">{card.description}</p>
-          </CardContent>
-        </Card>
+            {/* Subtle colored ambient glow behind the card on hover */}
+            <div className={`absolute -right-12 -bottom-12 w-24 h-24 rounded-full filter blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-5 ${card.glowBg} pointer-events-none`} />
+
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-5">
+              <CardTitle className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground font-sans">
+                {card.title}
+              </CardTitle>
+              <div className={`p-2 rounded-xl border ${card.bg} shadow-lg ${card.glow} flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                <card.icon className={`h-4 w-4 ${card.color}`} />
+              </div>
+            </CardHeader>
+            <CardContent className="px-5 pb-5">
+              <div className="text-3xl font-extrabold tracking-tight text-foreground font-heading transition-all duration-300 group-hover:text-primary-foreground">
+                {card.value}
+              </div>
+              <p className="text-[10px] text-muted-foreground/80 mt-1.5 font-bold uppercase tracking-wider">{card.description}</p>
+            </CardContent>
+          </Card>
+        </Link>
       ))}
     </div>
   )

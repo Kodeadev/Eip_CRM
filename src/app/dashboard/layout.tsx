@@ -19,17 +19,17 @@ export default function DashboardLayout({
 
         <DashboardSidebar />
 
-        <SidebarInset className="flex-1 flex flex-col bg-transparent relative z-10">
-          <header className="flex h-16 items-center justify-between gap-4 px-6 border-b border-border bg-background/20 backdrop-blur-md sticky top-0 z-30">
+        <SidebarInset className="flex-1 flex flex-col bg-transparent relative z-10 min-w-0 w-full overflow-hidden">
+          <header className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6 border-b border-border bg-background/20 backdrop-blur-md sticky top-0 z-30">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground cursor-pointer" />
               <div className="h-4 w-[1px] bg-border" />
-              <span className="text-sm font-bold tracking-widest bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent font-heading">
+              <span className="text-xs sm:text-sm font-bold tracking-widest bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent font-heading hidden xs:inline sm:inline">
                 EIP & ASSOCIATES
               </span>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* Floating Slide Theme switcher */}
               <ThemeSwitcher />
 
@@ -47,7 +47,7 @@ export default function DashboardLayout({
             </div>
           </header>
 
-          <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto min-w-0 w-full">
             {children}
           </main>
         </SidebarInset>

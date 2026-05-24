@@ -101,7 +101,7 @@ export default async function DetalleSociedadPage({ params }: { params: Promise<
         {/* Columna Izquierda: Información Principal */}
         <div className="lg:col-span-2 space-y-6">
           <Tabs defaultValue="detalle" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="flex w-full overflow-x-auto h-auto min-h-9 p-[3px] justify-start sm:justify-center gap-1.5 no-scrollbar">
               <TabsTrigger value="detalle">Detalles</TabsTrigger>
               <TabsTrigger value="documentos">Documentos</TabsTrigger>
               <TabsTrigger value="pagos">Pagos</TabsTrigger>

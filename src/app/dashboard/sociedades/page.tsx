@@ -8,13 +8,24 @@ import { buttonVariants } from '@/components/ui/button'
 
 export const dynamic = 'force-dynamic'
 
-export default async function SociedadesPage() {
+interface SearchParams {
+  status?: string
+}
+
+export default async function SociedadesPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
+  const params = await searchParams
+  const activeStatus = params?.status
+
   const supabase = await createClient()
   const societyService = new SocietyService(supabase)
   
   let societies = []
   try {
-    societies = await societyService.listSocieties()
+    societies = await societyService.listSocieties({ status: activeStatus })
   } catch (error) {
     console.error('Error al listar sociedades:', error)
   }
@@ -53,7 +64,7 @@ export default async function SociedadesPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
           <div 
             key={idx} 
@@ -70,7 +81,7 @@ export default async function SociedadesPage() {
 
       <div className="glass-panel border border-white/5 bg-black/25 p-6 rounded-2xl relative overflow-hidden shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
-        <SocietiesTable data={societies} />
+        <SocietiesTable data={societies} activeFilter={activeStatus} />
       </div>
     </div>
   )

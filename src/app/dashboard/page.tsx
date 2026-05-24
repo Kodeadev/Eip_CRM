@@ -1,5 +1,6 @@
 import { handleGetDashboardData } from '@/controllers/dashboard.controller'
 import { MetricsCards } from '@/components/dashboard/metrics-cards'
+import { QuickInsights } from '@/components/dashboard/quick-insights'
 import { AnalyticsCharts } from '@/components/dashboard/analytics-charts'
 import { RemindersTable } from '@/components/dashboard/reminders-table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,13 +28,16 @@ export default async function DashboardPage() {
             Dashboard Ejecutivo
           </h1>
           <p className="text-muted-foreground text-sm mt-1 font-semibold">
-            Control integral de sociedades y recordatorios de tasas anuales.
+            Control integral de sociedades, cobros financieros y recordatorios de tasas anuales.
           </p>
         </div>
       </div>
 
       {/* Métricas */}
       <MetricsCards metrics={metrics} />
+
+      {/* Quick Insights */}
+      <QuickInsights insights={metrics.insights} />
 
       {/* Gráficos */}
       <AnalyticsCharts data={chartData} />

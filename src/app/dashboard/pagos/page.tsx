@@ -7,8 +7,19 @@ import { buttonVariants } from '@/components/ui/button'
 
 export const dynamic = 'force-dynamic'
 
-export default async function PagosPage() {
-  const result = await handleListPayments()
+interface SearchParams {
+  filter?: string
+}
+
+export default async function PagosPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
+  const params = await searchParams
+  const activeFilter = params?.filter
+
+  const result = await handleListPayments(activeFilter)
   const payments = result.data || []
 
   // Calcular estadísticas básicas
@@ -58,7 +69,7 @@ export default async function PagosPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
           <div 
             key={idx} 
@@ -75,7 +86,7 @@ export default async function PagosPage() {
 
       <div className="glass-panel border border-white/5 bg-black/25 p-6 rounded-2xl relative overflow-hidden shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
-        <PaymentsTable data={payments || []} />
+        <PaymentsTable data={payments || []} activeFilter={activeFilter} />
       </div>
     </div>
   )

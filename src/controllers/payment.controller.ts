@@ -86,11 +86,11 @@ export async function handleCreatePayment(data: PaymentInput) {
   }
 }
 
-export async function handleListPayments() {
+export async function handleListPayments(filterType?: string) {
   try {
     const supabase = await createClient()
     const paymentService = new PaymentService(supabase)
-    const data = await paymentService.getPayments()
+    const data = await paymentService.getPayments({ filterType })
     return { success: true, data }
   } catch (error: any) {
     return { success: false, error: error.message || 'Error al obtener pagos' }

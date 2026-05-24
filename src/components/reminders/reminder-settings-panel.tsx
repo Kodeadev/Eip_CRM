@@ -122,8 +122,8 @@ export function ReminderSettingsPanel({
           </div>
         )}
 
-        <div className="overflow-hidden border border-border rounded-xl">
-          <table className="w-full text-left text-sm text-muted-foreground">
+        <div className="overflow-x-auto border border-border rounded-xl">
+          <table className="w-full min-w-[750px] text-left text-sm text-muted-foreground">
             <thead className="bg-muted text-xs font-bold text-foreground uppercase">
               <tr>
                 <th className="px-5 py-3">Días de Anticipo</th>

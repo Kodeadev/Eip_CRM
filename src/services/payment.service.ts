@@ -44,8 +44,8 @@ export class PaymentService {
     if (error) throw error
     return result
   }
-  async getPayments() {
-    const { data, error } = await this.supabase
+  async getPayments(filter?: { filterType?: string }) {
+    let query = this.supabase
       .from('society_payments')
       .select(`
         *,
@@ -57,6 +57,22 @@ export class PaymentService {
         )
       `)
       .order('payment_date', { ascending: false })
+
+    if (filter?.filterType === 'upcoming') {
+      const today = new Date().toISOString().split('T')[0]
+      const in30Days = new Date()
+      in30Days.setDate(in30Days.getDate() + 30)
+      const in30DaysStr = in30Days.toISOString().split('T')[0]
+      
+      query = query
+        .gte('next_due_date', today)
+        .lte('next_due_date', in30DaysStr)
+    } else if (filter?.filterType === 'overdue') {
+      const today = new Date().toISOString().split('T')[0]
+      query = query.lt('next_due_date', today)
+    }
+    
+    const { data, error } = await query
     
     if (error) throw error
     return data

@@ -198,7 +198,7 @@ export function RecordatoriosDashboardClient({
       </AnimatePresence>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6 gap-4">
         {kpis.map((kpi, idx) => (
           <motion.div
             key={kpi.title}
@@ -228,10 +228,10 @@ export function RecordatoriosDashboardClient({
       </div>
 
       {/* Main split section: Table & Stats Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
         
         {/* Left Side: Navigation Tabs & Tab Panels */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="xl:col-span-3 space-y-4">
           
           {/* Custom Sleek Tabs */}
           <div className="flex bg-card/40 border border-border p-1 rounded-xl w-fit backdrop-blur-md shadow-inner">
@@ -283,7 +283,7 @@ export function RecordatoriosDashboardClient({
         </div>
 
         {/* Right Side: Recharts Status Bar Distribution (Visual WOW factor) */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="xl:col-span-1 space-y-4">
           <div className="glass-panel border border-white/5 bg-black/25 p-5 rounded-2xl relative overflow-hidden shadow-xl flex flex-col justify-between h-full min-h-[350px]">
             <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
             <div>
