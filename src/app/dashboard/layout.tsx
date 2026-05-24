@@ -3,7 +3,7 @@
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { DashboardSidebar } from "@/components/dashboard-sidebar"
 import { ThemeSwitcher } from "@/components/theme-switcher"
-import { Bell } from "lucide-react"
+import { HeaderNotifications } from "@/components/dashboard/header-notifications"
 
 export default function DashboardLayout({
   children,
@@ -34,10 +34,7 @@ export default function DashboardLayout({
               <ThemeSwitcher />
 
               {/* Quick notification panel trigger */}
-              <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition duration-200 cursor-pointer relative">
-                <Bell className="h-4 w-4" />
-                <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-              </button>
+              <HeaderNotifications />
 
               <div className="h-4 w-[1px] bg-border" />
               
