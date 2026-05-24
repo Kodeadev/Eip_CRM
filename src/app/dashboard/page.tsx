@@ -4,6 +4,8 @@ import { AnalyticsCharts } from '@/components/dashboard/analytics-charts'
 import { RemindersTable } from '@/components/dashboard/reminders-table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const result = await handleGetDashboardData()
 

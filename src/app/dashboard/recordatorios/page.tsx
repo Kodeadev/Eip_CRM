@@ -1,6 +1,8 @@
 import { handleGetRemindersDashboard } from '@/controllers/reminder.controller'
 import { RecordatoriosDashboardClient } from '@/components/reminders/recordatorios-dashboard-client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function RecordatoriosPage() {
   const result = await handleGetRemindersDashboard()
   
