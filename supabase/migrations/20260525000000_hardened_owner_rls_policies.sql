@@ -11,6 +11,8 @@ BEGIN
     IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'society_history') THEN
         DROP POLICY IF EXISTS "Usuarios autenticados pueden ver historial" ON public.society_history;
         DROP POLICY IF EXISTS "Usuarios autenticados pueden insertar historial" ON public.society_history;
+        DROP POLICY IF EXISTS "Owner only select society_history" ON public.society_history;
+        DROP POLICY IF EXISTS "Authorized staff insert society_history" ON public.society_history;
 
         CREATE POLICY "Owner only select society_history" ON public.society_history
           FOR SELECT TO authenticated
@@ -27,6 +29,8 @@ BEGIN
     IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'reminder_logs') THEN
         DROP POLICY IF EXISTS "Usuarios autenticados pueden ver logs de recordatorios" ON public.reminder_logs;
         DROP POLICY IF EXISTS "Usuarios autenticados pueden insertar logs de recordatorios" ON public.reminder_logs;
+        DROP POLICY IF EXISTS "Owner only select reminder_logs" ON public.reminder_logs;
+        DROP POLICY IF EXISTS "Staff insert reminder_logs" ON public.reminder_logs;
 
         CREATE POLICY "Owner only select reminder_logs" ON public.reminder_logs
           FOR SELECT TO authenticated
@@ -75,6 +79,7 @@ BEGIN
         ALTER TABLE public.reminder_settings ENABLE ROW LEVEL SECURITY;
         DROP POLICY IF EXISTS "Owner manage settings" ON public.reminder_settings;
         DROP POLICY IF EXISTS "Staff select reminder_settings" ON public.reminder_settings;
+        DROP POLICY IF EXISTS "Owner manage reminder_settings" ON public.reminder_settings;
 
         CREATE POLICY "Staff select reminder_settings" ON public.reminder_settings
           FOR SELECT TO authenticated
