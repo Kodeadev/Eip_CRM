@@ -108,6 +108,7 @@ export class DashboardService {
     const { data: payments, error: ePay } = await this.supabase
       .from('society_payments')
       .select('payment_date, amount')
+      .limit(1000)
     
     if (ePay) throw ePay
 

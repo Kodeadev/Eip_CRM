@@ -46,7 +46,7 @@ export class NotificationService {
           pass: smtp_pass,
         },
         tls: {
-          rejectUnauthorized: false
+          rejectUnauthorized: true
         }
       })
 

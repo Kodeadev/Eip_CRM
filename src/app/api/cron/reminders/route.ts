@@ -6,13 +6,11 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   try {
-    console.log('API Cron triggers reminder scanning...')
-    
-    // Optional auth header verification (if CRON_SECRET is configured)
+    // SECURITY: Mandatory CRON_SECRET verification
     const authHeader = request.headers.get('authorization')
     const expectedSecret = process.env.CRON_SECRET
     
-    if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+    if (!expectedSecret || authHeader !== `Bearer ${expectedSecret}`) {
       console.warn('Unauthorized cron trigger attempt.')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

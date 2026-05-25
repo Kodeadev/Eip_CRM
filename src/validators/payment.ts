@@ -29,7 +29,12 @@ export const paymentSchema = z.object({
   
   notes: z.string().optional(),
 
-  new_documents: z.array(z.any()).optional(),
+  new_documents: z.array(z.object({
+    name: z.string(),
+    file_path: z.string(),
+    file_type: z.string().optional(),
+    file_size: z.number().optional(),
+  })).optional(),
 })
 
 export type PaymentInput = z.infer<typeof paymentSchema>

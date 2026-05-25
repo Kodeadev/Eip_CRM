@@ -3,9 +3,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { DashboardService } from '@/services/dashboard.service'
 import { ReminderService } from '@/services/reminder.service'
+import { requireAuth } from '@/lib/auth-guard'
 
 export async function handleGetDashboardData() {
   try {
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
     const supabase = await createClient()
     const dashboardService = new DashboardService(supabase)
     const reminderService = new ReminderService(supabase)
@@ -29,6 +33,15 @@ export async function handleGetDashboardData() {
 
 export async function handleUpdateReminderStatus(id: string, status: string) {
   try {
+    // SECURITY: Require authenticated user (admin or empleado)
+    await requireAuth(['admin', 'empleado'])
+
+    // SECURITY: Validate status value
+    const validStatuses = ['pendiente', 'próximo', 'vencido', 'pagado', 'cancelado']
+    if (!validStatuses.includes(status)) {
+      return { success: false, error: 'Estado inválido' }
+    }
+
     const supabase = await createClient()
     const reminderService = new ReminderService(supabase)
 

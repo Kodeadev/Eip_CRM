@@ -1,18 +1,34 @@
 'use server'
 
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
 import { ReminderEngineService } from '@/services/reminder-engine.service'
+import { requireAuth, requireAdmin } from '@/lib/auth-guard'
 
 /**
- * Helper to initialize a Supabase client inside Server Actions
+ * Helper: Service-role Supabase client for engine operations that need
+ * to bypass RLS (e.g., recalculating ALL reminders across societies).
  */
-async function getSupabaseServer() {
+function getServiceRoleClient() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY is required')
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceKey
+  )
+}
+
+/**
+ * Helper: Session-based Supabase client for user-scoped operations.
+ */
+async function getSessionClient() {
   const cookieStore = await cookies()
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, // Use service role for backend engine operations
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
@@ -34,7 +50,10 @@ async function getSupabaseServer() {
 
 export async function handleGetRemindersDashboard() {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
+    const supabase = getServiceRoleClient()
     
     // 1. Fetch reminders with society details
     const { data: reminders, error: remError } = await supabase
@@ -76,14 +95,24 @@ export async function handleGetRemindersDashboard() {
       logs: logs || []
     }
   } catch (err: any) {
-    console.error('Error in handleGetRemindersDashboard:', err)
     return { success: false, error: err.message || 'Error al cargar recordatorios' }
   }
 }
 
 export async function handleSendManualReminder(reminderId: string, channel: 'email' | 'whatsapp') {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Admin-only operation
+    await requireAdmin()
+
+    // SECURITY: Validate inputs
+    if (!reminderId || typeof reminderId !== 'string') {
+      return { success: false, error: 'ID de recordatorio inválido' }
+    }
+    if (!['email', 'whatsapp'].includes(channel)) {
+      return { success: false, error: 'Canal de notificación inválido' }
+    }
+
+    const supabase = getServiceRoleClient()
     const engine = new ReminderEngineService(supabase)
     
     const result = await engine.sendManualReminder(reminderId, channel)
@@ -92,14 +121,33 @@ export async function handleSendManualReminder(reminderId: string, channel: 'ema
     revalidatePath('/dashboard/recordatorios')
     return { success: true }
   } catch (err: any) {
-    console.error('Error in handleSendManualReminder:', err)
     return { success: false, error: err.message || 'Error al enviar recordatorio manual' }
   }
 }
 
-export async function handleUpdateReminderSettings(settingsList: any[]) {
+// SECURITY: Zod schema for reminder settings validation (HIGH-05 fix)
+const reminderSettingSchema = z.object({
+  id: z.string().uuid(),
+  days_before: z.number().int().min(0).max(365),
+  auto_priority: z.enum(['low', 'medium', 'high', 'critical']),
+  channels: z.array(z.enum(['email', 'whatsapp'])),
+  is_active: z.boolean(),
+})
+const reminderSettingsListSchema = z.array(reminderSettingSchema)
+
+export async function handleUpdateReminderSettings(rawData: unknown) {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Admin-only operation
+    await requireAdmin()
+
+    // SECURITY: Server-side Zod validation
+    const parsed = reminderSettingsListSchema.safeParse(rawData)
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Datos de configuración inválidos' }
+    }
+    const settingsList = parsed.data
+
+    const supabase = getServiceRoleClient()
     
     for (const item of settingsList) {
       const { error } = await supabase
@@ -123,14 +171,20 @@ export async function handleUpdateReminderSettings(settingsList: any[]) {
     revalidatePath('/dashboard/recordatorios')
     return { success: true }
   } catch (err: any) {
-    console.error('Error in handleUpdateReminderSettings:', err)
     return { success: false, error: err.message || 'Error al actualizar configuraciones' }
   }
 }
 
 export async function handleMarkAsPaid(reminderId: string) {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Require authenticated user (admin or empleado)
+    await requireAuth(['admin', 'empleado'])
+
+    if (!reminderId || typeof reminderId !== 'string') {
+      return { success: false, error: 'ID de recordatorio inválido' }
+    }
+
+    const supabase = getServiceRoleClient()
     
     // Fetch current reminder to get society ID and due date
     const { data: reminder, error: fetchError } = await supabase
@@ -176,14 +230,16 @@ export async function handleMarkAsPaid(reminderId: string) {
     revalidatePath('/dashboard/recordatorios')
     return { success: true }
   } catch (err: any) {
-    console.error('Error in handleMarkAsPaid:', err)
     return { success: false, error: err.message || 'Error al registrar pago' }
   }
 }
 
 export async function handleRecalculateEngine() {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Admin-only operation
+    await requireAdmin()
+
+    const supabase = getServiceRoleClient()
     const engine = new ReminderEngineService(supabase)
     const result = await engine.recalculateReminderStates()
     
@@ -192,13 +248,23 @@ export async function handleRecalculateEngine() {
     revalidatePath('/dashboard/recordatorios')
     return { success: true, count: result.count }
   } catch (err: any) {
-    console.error('Error in handleRecalculateEngine:', err)
+    return { success: false, error: err.message || 'Error al recalcular recordatorios' }
   }
 }
 
 export async function handleToggleProviderStatus(providerId: string, isActive: boolean) {
   try {
-    const supabase = await getSupabaseServer()
+    // SECURITY: Admin-only operation
+    await requireAdmin()
+
+    if (!providerId || typeof providerId !== 'string') {
+      return { success: false, error: 'ID de proveedor inválido' }
+    }
+    if (typeof isActive !== 'boolean') {
+      return { success: false, error: 'Estado inválido' }
+    }
+
+    const supabase = getServiceRoleClient()
     const { error } = await supabase
       .from('notification_providers')
       .update({
@@ -212,7 +278,6 @@ export async function handleToggleProviderStatus(providerId: string, isActive: b
     revalidatePath('/dashboard/recordatorios')
     return { success: true }
   } catch (err: any) {
-    console.error('Error in handleToggleProviderStatus:', err)
     return { success: false, error: err.message || 'Error al cambiar estado del proveedor' }
   }
 }

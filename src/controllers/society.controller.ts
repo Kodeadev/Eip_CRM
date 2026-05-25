@@ -3,23 +3,30 @@
 import { createClient } from '@/lib/supabase/server'
 import { SocietyService } from '@/services/society.service'
 import { ReminderService } from '@/services/reminder.service'
-import { SocietyInput } from '@/validators/society'
+import { societySchema, SocietyInput } from '@/validators/society'
+import { requireAuth } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
-export async function handleCreateSociety(data: SocietyInput) {
+export async function handleCreateSociety(rawData: unknown) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    const userId = user?.id
+    // SECURITY: Require authenticated user (admin or empleado)
+    const authUser = await requireAuth(['admin', 'empleado'])
 
+    // SECURITY: Server-side Zod validation
+    const parsed = societySchema.safeParse(rawData)
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Datos inválidos' }
+    }
+    const data = parsed.data
+
+    const supabase = await createClient()
     const societyService = new SocietyService(supabase)
-    const reminderService = new ReminderService(supabase)
 
     // Extraer documentos si existen
     const { new_documents, ...societyData } = data;
 
     // 1. Crear Sociedad
-    const result = await societyService.createSociety(societyData as SocietyInput, userId)
+    const result = await societyService.createSociety(societyData as SocietyInput, authUser.id)
 
     // 2. Agregar Documentos (si hay)
     if (new_documents && new_documents.length > 0) {
@@ -42,6 +49,9 @@ export async function handleCreateSociety(data: SocietyInput) {
 
 export async function handleListSocieties() {
   try {
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
     const supabase = await createClient()
     const societyService = new SocietyService(supabase)
     const data = await societyService.listSocieties()
@@ -53,6 +63,9 @@ export async function handleListSocieties() {
 
 export async function handleGetSociety(id: string) {
   try {
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
     const supabase = await createClient()
     const societyService = new SocietyService(supabase)
     const data = await societyService.getSociety(id)
@@ -62,18 +75,25 @@ export async function handleGetSociety(id: string) {
   }
 }
 
-export async function handleUpdateSociety(id: string, data: Partial<SocietyInput>) {
+export async function handleUpdateSociety(id: string, rawData: unknown) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    const userId = user?.id
+    // SECURITY: Require authenticated user (admin or empleado)
+    const authUser = await requireAuth(['admin', 'empleado'])
 
+    // SECURITY: Server-side partial validation
+    const parsed = societySchema.partial().safeParse(rawData)
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Datos inválidos' }
+    }
+    const data = parsed.data
+
+    const supabase = await createClient()
     const societyService = new SocietyService(supabase)
     
     // Extraer documentos si existen
     const { new_documents, ...societyData } = data;
     
-    const result = await societyService.updateSociety(id, societyData, userId)
+    const result = await societyService.updateSociety(id, societyData, authUser.id)
     
     // Agregar Documentos (si hay)
     if (new_documents && new_documents.length > 0) {
@@ -90,13 +110,15 @@ export async function handleUpdateSociety(id: string, data: Partial<SocietyInput
     if (error.message?.includes('societies_ruc_key') || error.message?.includes('ruc')) {
       return { success: false, error: 'El RUC ingresado ya está registrado para otra sociedad.' }
     }
-    console.error('--- handleUpdateSociety ERROR ---', error);
     return { success: false, error: error.message || 'Error al actualizar sociedad' }
   }
 }
 
 export async function handleDeleteSociety(id: string) {
   try {
+    // SECURITY: Admin-only operation
+    await requireAuth(['admin'])
+
     const supabase = await createClient()
     const societyService = new SocietyService(supabase)
     await societyService.deleteSociety(id)
@@ -109,6 +131,9 @@ export async function handleDeleteSociety(id: string) {
 
 export async function handleGetNextInternalId() {
   try {
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
     const supabase = await createClient()
     const societyService = new SocietyService(supabase)
     const nextId = await societyService.getNextInternalId()

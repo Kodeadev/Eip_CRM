@@ -4,11 +4,22 @@ import { createClient } from '@/lib/supabase/server'
 import { PaymentService } from '@/services/payment.service'
 import { SocietyService } from '@/services/society.service'
 import { ReminderService } from '@/services/reminder.service'
-import { PaymentInput } from '@/validators/payment'
+import { paymentSchema, PaymentInput } from '@/validators/payment'
+import { requireAuth } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
-export async function handleCreatePayment(data: PaymentInput) {
+export async function handleCreatePayment(rawData: unknown) {
   try {
+    // SECURITY: Require authenticated user (admin or empleado)
+    await requireAuth(['admin', 'empleado'])
+
+    // SECURITY: Server-side Zod validation
+    const parsed = paymentSchema.safeParse(rawData)
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Datos inválidos' }
+    }
+    const data = parsed.data
+
     const supabase = await createClient()
     const paymentService = new PaymentService(supabase)
     const societyService = new SocietyService(supabase)
@@ -50,19 +61,17 @@ export async function handleCreatePayment(data: PaymentInput) {
       reminderStatus = 'próximo'
       reminderPriority = 'alta'
     } else {
-      reminderStatus = 'pagado' // o pendiente para el próximo año
+      reminderStatus = 'pagado'
       reminderPriority = 'baja'
     }
 
     if (existingReminder) {
-      // Actualizar recordatorio existente
       await reminderService.updateReminder(existingReminder.id, {
         due_date: data.next_due_date,
         status: reminderStatus as any,
         priority: reminderPriority as any,
       })
     } else {
-      // Crear nuevo recordatorio si no existía
       await reminderService.createReminder({
         society_id: data.society_id,
         reminder_type: 'tasa_anual',
@@ -81,13 +90,15 @@ export async function handleCreatePayment(data: PaymentInput) {
     
     return { success: true, data: payment }
   } catch (error: any) {
-    console.error('Error al registrar pago:', error)
     return { success: false, error: error.message || 'Error al registrar el pago' }
   }
 }
 
 export async function handleListPayments(filterType?: string) {
   try {
+    // SECURITY: Require authenticated user
+    await requireAuth()
+
     const supabase = await createClient()
     const paymentService = new PaymentService(supabase)
     const data = await paymentService.getPayments({ filterType })
@@ -97,8 +108,18 @@ export async function handleListPayments(filterType?: string) {
   }
 }
 
-export async function handleUpdatePayment(id: string, data: PaymentInput) {
+export async function handleUpdatePayment(id: string, rawData: unknown) {
   try {
+    // SECURITY: Require authenticated user (admin or empleado)
+    await requireAuth(['admin', 'empleado'])
+
+    // SECURITY: Server-side Zod validation
+    const parsed = paymentSchema.safeParse(rawData)
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0]?.message || 'Datos inválidos' }
+    }
+    const data = parsed.data
+
     const supabase = await createClient()
     const paymentService = new PaymentService(supabase)
     const societyService = new SocietyService(supabase)
@@ -168,8 +189,6 @@ export async function handleUpdatePayment(id: string, data: PaymentInput) {
     
     return { success: true, data: payment }
   } catch (error: any) {
-    console.error('Error al actualizar pago:', error)
     return { success: false, error: error.message || 'Error al actualizar el pago' }
   }
 }
-

@@ -2,7 +2,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import { SocietyInput } from '@/validators/society'
 
 export class SocietyService {
-  constructor(private supabase: SupabaseClient) {}
+  constructor(private supabase: SupabaseClient) { }
 
   async listSocieties(filter?: { status?: string }) {
     let query = this.supabase
@@ -19,9 +19,9 @@ export class SocietyService {
     }
 
     query = query.order('created_at', { ascending: false })
-    
+
     const { data, error } = await query
-    
+
     if (error) throw error
     return data
   }
@@ -32,7 +32,7 @@ export class SocietyService {
       .select('*')
       .eq('id', id)
       .single()
-    
+
     if (error) throw error
     return data
   }
@@ -55,7 +55,7 @@ export class SocietyService {
       .select('*')
       .eq('society_id', societyId)
       .order('created_at', { ascending: false })
-    
+
     if (error) throw error
     return data
   }
@@ -66,7 +66,7 @@ export class SocietyService {
       .insert(data)
       .select()
       .single()
-    
+
     if (error) throw error
 
     // Registrar en historial
@@ -90,14 +90,14 @@ export class SocietyService {
       .eq('id', id)
       .select()
       .single()
-    
+
     if (error) throw error
 
     // 3. Calcular diferencias
     const changes: Record<string, { old: any; new: any }> = {}
     const keysToTrack = [
-      'name', 'internal_id', 'ruc', 'dv', 'folio_number', 
-      'constitution_date', 'legal_person_type', 'status', 
+      'name', 'internal_id', 'ruc', 'dv', 'folio_number',
+      'constitution_date', 'legal_person_type', 'status',
       'legal_representative', 'email', 'phone', 'phone_country_prefix',
       'address', 'expedient_number', 'observations',
       'registered_mici', 'registered_rubf', 'registered_dgi'
@@ -129,7 +129,7 @@ export class SocietyService {
       .from('societies')
       .update({ deleted_at: new Date().toISOString() })
       .eq('id', id)
-    
+
     if (error) throw error
   }
 
@@ -143,7 +143,7 @@ export class SocietyService {
       .from('society_documents')
       .insert(docsToInsert)
       .select()
-    
+
     if (error) throw error
     return data
   }
@@ -154,7 +154,7 @@ export class SocietyService {
       .select('*')
       .eq('society_id', societyId)
       .order('created_at', { ascending: false })
-    
+
     if (error) throw error
 
     // Generar URLs firmadas para acceso privado (válidas por 1 hora)
@@ -163,7 +163,7 @@ export class SocietyService {
         const { data: signedData, error: signedError } = await this.supabase.storage
           .from('society_documents')
           .createSignedUrl(doc.file_path, 60 * 60) // 1 hora
-        
+
         if (!signedError && signedData) {
           doc.signed_url = signedData.signedUrl
         }
@@ -178,16 +178,16 @@ export class SocietyService {
       .from('societies')
       .select('internal_id')
       .is('deleted_at', null)
-    
+
     if (error) throw error
-    
+
     const ids = (data || [])
       .map(s => parseInt(s.internal_id || '0', 10))
       .filter(id => !isNaN(id))
-    
+
     const maxId = ids.length > 0 ? Math.max(...ids) : 0
     const nextId = maxId + 1
-    
+
     // Rellenar con ceros a la izquierda (ej. 001, 002, etc.)
     return String(nextId).padStart(3, '0')
   }

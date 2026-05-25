@@ -18,7 +18,8 @@ export class AuthController {
       await this.authService.login({ email, password: data.password })
       return { success: true }
     } catch (error: any) {
-      return { success: false, error: error.message || 'Error al iniciar sesión' }
+      // SECURITY: Generic error message to prevent user enumeration
+      return { success: false, error: 'Credenciales inválidas. Verifica tu usuario y contraseña.' }
     }
   }
 
